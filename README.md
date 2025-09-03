@@ -31,7 +31,25 @@ It supports multiple database types and output formats such as **Excel**, **CSV*
 
 - ✅ **Batch Processing**
   - Handles large datasets efficiently with batching support
+    
+## How to Use
+### 1. Add maven dependency
+```xml
 
+```
+### 2. Setup properties
+
+### 3. Configure IEConfigurer
+```java
+  @Bean
+  public AutoContexConfigurer IEConfigurer(IEProperties properties) throws NoSuchFieldException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+      LOGGER.info("initiation IE Context...");
+      AutoContexConfigurer autoContexConfigurer = new AutoContexConfigurer();
+      autoContexConfigurer.init(properties);
+      LOGGER.info("initiation IE Context success");
+      return autoContexConfigurer;
+  }
+```
 ## 🚀 Future Plans
 
 - CSV Processor
