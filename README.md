@@ -19,12 +19,12 @@ Built on top of **Apache POI**, it supports multiple database types and output f
 - ✅ **Database-Agnostic Design**
   - Works with any database supported by JPA/Hibernate
   - Extendable to support NoSQL sources
-  - Handles lazy fetches and updates sessions automatically
+  - Handles lazy fetches and session updates automatically
 
 - ✅ **Extensible Architecture**
   - Simple `Processor` interface for implementing custom input/output formats
   - **Flexible Data Mapping**: map entity fields to DTOs or transform field values (e.g., convert dates to strings, select specific fields)
-  - **Error-tolerant Processing**: gracefully skips invalid records and continues processing
+  - **Error-Tolerant Processing**: gracefully skips invalid records and continues processing
 
 - ✅ **Error Handling & Logging**
   - Captures validation errors during import
@@ -60,11 +60,11 @@ mvn install:install-file -Dfile=ie-module.jar -DgroupId=com.yourcompany -Dartifa
 IE-Module has several configurable properties. These can be set in `application.properties` or programmatically.
 
 | Property               | Description                                           |
-|-----------------------|-----------------------------------------------------|
-| `ie.ie-report-path`   | Path where import/export progress reports are saved |
-| `ie.ie-export-path`   | Path where exported data will be stored             |
-| `ie.ie-template-path` | Path where templates are stored                     |
-| `ie.package-to-scan`  | Package to scan for reportable classes              |
+|------------------------|-----------------------------------------------------|
+| `ie.ie-report-path`    | Path where import/export progress reports are saved |
+| `ie.ie-export-path`    | Path where exported data will be stored             |
+| `ie.ie-template-path`  | Path where templates are stored                     |
+| `ie.package-to-scan`   | Package to scan for reportable classes              |
 
 **Example (`application.properties`):**
 
@@ -140,14 +140,14 @@ public class CustomerData implements Exportable<CustomerData>, ExcelSheetConfigu
     private int age;
 
     @Reportable
-    private List<String> adresses;
+    private List<String> addresses;
 
     // Getters and Setters
 
     @Override
     public Iterable<SheetConfig<CustomerData>> sheetConfigs() {
         List<SheetConfig<CustomerData>> sheetConfigs = new ArrayList<>();
-        sheetConfigs.add(new SheetConfig<>(Stream.of("adresses").collect(Collectors.toSet()), "Customer Data"));
+        sheetConfigs.add(new SheetConfig<>(Stream.of("addresses").collect(Collectors.toSet()), "Customer Data"));
         sheetConfigs.add(new SheetConfig<>(Stream.of("age").collect(Collectors.toSet()), "Addresses", e -> e.status != null));
         return sheetConfigs;
     }
@@ -156,8 +156,43 @@ public class CustomerData implements Exportable<CustomerData>, ExcelSheetConfigu
 
 ---
 
+### 5. Generating Reports
+
+IE-Module has three main classes:  
+1. **Processor**: Handles Input/Output files (Excel, CSV, etc.)  
+2. **Task Runner**: Handles database operations (read/write)  
+3. **Report Util**: Coordinates Processor and Task Runner
+
+#### Define a Task Runner
+
+```java
+public class CustomerDataTaskRunner extends ExportTaskRunner<CustomerData> {
+    private final CustomerDataService service;
+
+    public CustomerDataTaskRunner(CustomerDataService service) {
+        this.service = service;
+    }
+
+    @Override
+    public void run() throws Exception {
+        List<CustomerData> content = service.getAll();
+        doExport(content);
+    }
+}
+```
+
+#### Start Export Process
+
+```java
+ExportTaskRunner<CustomerData> taskRunner = new CustomerDataTaskRunner(myCustomerService);
+ExportProcessor<CustomerData> exportProcessor = new DefaultExcelExportProcessor<>("reportId", CustomerData.class);
+String excelFilePath = IEUtils.exportData(taskRunner, exportProcessor);
+```
+
+---
+
 ## 🚀 Future Plans
 
 - CSV Processor  
 - JSON Processor  
-- Web UI for dynamically configuring import/export rules
+- UI for dynamically configuring import/export rules
