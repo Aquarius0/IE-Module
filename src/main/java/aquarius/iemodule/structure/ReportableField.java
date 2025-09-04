@@ -1,6 +1,7 @@
 package aquarius.iemodule.structure;
 
-import org.jetbrains.annotations.NotNull;
+
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

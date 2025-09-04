@@ -1,5 +1,6 @@
 package aquarius.iemodule.impl;
 
+import jakarta.persistence.EntityManagerFactory;
 import aquarius.iemodule.DefaultIEExcelStyle;
 import aquarius.iemodule.IEExcelStyle;
 import aquarius.iemodule.impl.util.ExcelSheetConfigurer;
@@ -9,7 +10,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.hibernate.Session;
 
-import javax.persistence.EntityManagerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
@@ -34,6 +34,7 @@ public class DefaultHibernateSessionSupportExcelExportProcessor<T extends Export
             super.processRecord(accessRules);
         } finally {
             this.session.close();
+            this.entityManagerFactory.close();
         }
 
     }

@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 
-@ConfigurationProperties(prefix = "fidar.ie")
+@ConfigurationProperties(prefix = "ie")
 public class IEProperties {
 
     private String ieReportPath;

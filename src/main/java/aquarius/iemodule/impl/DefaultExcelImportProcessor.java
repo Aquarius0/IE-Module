@@ -1,13 +1,15 @@
 package aquarius.iemodule.impl;
 
-import aquarius.iemodule.exception.ServiceNotSupportedException;
 import aquarius.iemodule.utils.StringUtils;
 import com.google.common.primitives.Primitives;
-import aquarius.iemodule.DefaultIEExcelStyle;
-import aquarius.iemodule.IEContext;
-import aquarius.iemodule.IEExcelStyle;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import aquarius.iemodule.*;
 import aquarius.iemodule.config.ApplicationContextProvider;
+import aquarius.iemodule.exception.InsecureFileException;
 import aquarius.iemodule.exception.NotAcceptableReportTypeException;
+import aquarius.iemodule.exception.ServiceNotSupportedException;
 import aquarius.iemodule.impl.util.ExcelSheetConfigurer;
 import aquarius.iemodule.impl.util.ExcelTemplateConf;
 import aquarius.iemodule.impl.util.TemplateConfig;
@@ -16,14 +18,14 @@ import aquarius.iemodule.processors.ImportTaskRunner;
 import aquarius.iemodule.structure.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.poifs.macros.VBAMacroReader;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
+
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
@@ -58,19 +60,51 @@ public class DefaultExcelImportProcessor<T extends Importable<T> & ExcelSheetCon
         return ExcelSheetConfigurer.class.isAssignableFrom(reportable);
     }
 
-    public DefaultExcelImportProcessor(InputStream excelfile, Class<T> entityDtoClass, String user) throws IOException {
+    public DefaultExcelImportProcessor(File excelfile, Class<T> entityDtoClass, String user) throws IOException {
         this(excelfile, entityDtoClass, user, new DefaultIEExcelStyle());
     }
 
-    public DefaultExcelImportProcessor(InputStream excelfile, Class<T> entityDtoClass, String user, IEExcelStyle ieExcelStyle) throws IOException {
-        this.inoutWorkbook = new XSSFWorkbook(excelfile);
+
+    private void validate(InputStream excelFile){
+        boolean macroDetected;
+        try( VBAMacroReader vbaMacroReader = new VBAMacroReader(excelFile)) {
+            Map macros = vbaMacroReader.readMacros();
+
+            macroDetected = macros != null && !macros.isEmpty();
+        } catch (IllegalArgumentException | IOException e) {
+            macroDetected = false;
+        } catch (Exception e) {
+            LOGGER.debug(
+                    "Unexpected error occurred while checking imported excel file for macros",
+                    e
+            );
+
+            throw new IllegalStateException(e);
+        }
+
+        if (macroDetected) {
+            throw new InsecureFileException(InsecureFileException.Type.CONTAINS_MACRO);
+        }
+    }
+    public DefaultExcelImportProcessor(File excelfile, Class<T> entityDtoClass, String user, IEExcelStyle ieExcelStyle) throws IOException {
+        this( new ReOpenableInputStream(excelfile),entityDtoClass,user,ieExcelStyle);
+    }
+
+    public DefaultExcelImportProcessor(ReOpenableInputStream inputStream, Class<T> entityDtoClass, String user) throws IOException {
+
+        this(inputStream,entityDtoClass,user, new DefaultIEExcelStyle());
+    }
+    public DefaultExcelImportProcessor(ReOpenableInputStream inputStream, Class<T> entityDtoClass, String user, IEExcelStyle ieExcelStyle) throws IOException {
+        InputStream is = inputStream.getInputStream();
+        validate(is);
+        is.close();
+        this.inoutWorkbook = new XSSFWorkbook(inputStream.getInputStream());
         this.reportWorkbook = new XSSFWorkbook();
         this.clazz = entityDtoClass;
         this.user = user;
         this.ieExcelStyle = ieExcelStyle;
         this.validator = ApplicationContextProvider.getContext().getBean(Validator.class);
     }
-
     @Override
     public void init() throws Exception {
         if(!this.isAcceptable(clazz)){
@@ -395,7 +429,7 @@ public class DefaultExcelImportProcessor<T extends Importable<T> & ExcelSheetCon
                     if (Importable.class.isAssignableFrom((Class<?>) f.getGenericType()[0])) {
                         objects.add(createObject((Class<?>) f.getGenericType()[0], null, IEContext.getReportableEntity((Class<?>) (Class<?>) f.getGenericType()[0]).getMainFields(), null,offset + f.getStartCell(), row));
                     } else if (Iterable.class.isAssignableFrom((Class<?>) f.getGenericType()[0])) {
-                        throw new ServiceNotSupportedException();
+                        throw new ServiceNotSupportedException("Service Not supported iterable in iterable");
                     } else {
                         Cell cell = row.getCell(offset + f.getStartCell());
                         Object o = cell2Obj(cell, (Class<?>) f.getGenericType()[0]);
@@ -408,7 +442,7 @@ public class DefaultExcelImportProcessor<T extends Importable<T> & ExcelSheetCon
                     if (Importable.class.isAssignableFrom((Class<?>) f.getGenericType()[0])) {
                         objects.add(createObject((Class<?>) f.getGenericType()[0], null, IEContext.getReportableEntity((Class<?>) f.getGenericType()[0]).getMainFields(), null,offset + f.getStartCell(), row));
                     } else if (Iterable.class.isAssignableFrom((Class<?>) f.getGenericType()[0])) {
-                        throw new ServiceNotSupportedException();
+                        throw new ServiceNotSupportedException("Service Not supported iterable in iterable");
                     } else {
                         Cell cell = row.getCell(offset + f.getStartCell());
                         Object o = cell2Obj(cell, (Class<?>) f.getGenericType()[0]);

@@ -33,14 +33,21 @@ public class DefaultExcelExportProcessor<T extends Exportable<T> & ExcelSheetCon
     private CellStyle oddHyperLinkStyle;
     private CellStyle evenHyperLinkStyle;
 
+    private final boolean enableHyperlink;
     private final Class<T> CLAZZ;
-
-    public DefaultExcelExportProcessor(IEExcelStyle ieExcelStyle, String fileName, Class<T> clazz) {
+    public DefaultExcelExportProcessor(IEExcelStyle ieExcelStyle, String fileName, Class<T> clazz, boolean enableHyperlink) {
         this.ieExcelStyle = ieExcelStyle;
         this.fileName = fileName;
         this.CLAZZ = clazz;
+        this.enableHyperlink=enableHyperlink;
+    }
+    public DefaultExcelExportProcessor(IEExcelStyle ieExcelStyle, String fileName, Class<T> clazz) {
+        this(ieExcelStyle,fileName,clazz,true);
     }
 
+    public DefaultExcelExportProcessor(String fileName, Class<T> clazz, boolean enableHyperlink) {
+        this(new DefaultIEExcelStyle(), fileName, clazz,enableHyperlink);
+    }
     public DefaultExcelExportProcessor(String fileName, Class<T> clazz) {
         this(new DefaultIEExcelStyle(), fileName, clazz);
     }
@@ -233,7 +240,7 @@ public class DefaultExcelExportProcessor<T extends Exportable<T> & ExcelSheetCon
                 else if (fieldValue != null && (String.class.isAssignableFrom(rf.getType()) || Enum.class.isAssignableFrom(rf.getType()))) {
                     cell.setCellValue((fieldValue.toString()));
 
-                    if (rf.getHyperLinkHelper() != null) {
+                    if (rf.getHyperLinkHelper() != null && enableHyperlink) {
                         HyperLinkHelper hyperLinkHelper = rf.getHyperLinkHelper();
                         cell.setCellStyle(isOdd ? oddHyperLinkStyle : evenHyperLinkStyle);
                         CreationHelper creationHelper = workbook.getCreationHelper();
@@ -308,7 +315,7 @@ public class DefaultExcelExportProcessor<T extends Exportable<T> & ExcelSheetCon
                         else if (next != null && (String.class.isAssignableFrom(next.getClass()) || Enum.class.isAssignableFrom(next.getClass()))){
                             cell.setCellValue((next.toString()));
 
-                            if (rf.reportableField.getHyperLinkHelper() != null) {
+                            if (rf.reportableField.getHyperLinkHelper() != null && enableHyperlink) {
                                 HyperLinkHelper hyperLinkHelper = rf.reportableField.getHyperLinkHelper();
                                 cell.setCellStyle(isOdd ? oddHyperLinkStyle : evenHyperLinkStyle);
                                 CreationHelper creationHelper = workbook.getCreationHelper();

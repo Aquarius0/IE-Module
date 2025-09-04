@@ -1,5 +1,7 @@
 package aquarius.iemodule.structure;
 
+
+
 import aquarius.iemodule.impl.util.TemplateConfig;
 import aquarius.iemodule.processors.ImportProcessor;
 
@@ -72,7 +74,7 @@ public class ReportableEntity {
         }
         mainFields.add(reportableField);
     }
-    public  void addTemplate(Class<? extends ImportProcessor> processor,Class<? extends Reportable> importable,String template){
+    public  void addTemplate(Class<? extends ImportProcessor> processor, Class<? extends Reportable> importable, String template){
         this.template.put(String.format("%s-%s",processor.getName(),importable.getName()),template);
     }
     public  String getTemplate(Class<? extends ImportProcessor> processor,Class<? extends Importable> importable){

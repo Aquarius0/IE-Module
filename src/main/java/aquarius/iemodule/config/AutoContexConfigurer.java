@@ -1,15 +1,15 @@
 package aquarius.iemodule.config;
 
+import com.google.common.primitives.Primitives;
+import jakarta.validation.constraints.NotNull;
+import aquarius.iemodule.utils.StringUtils;
 import aquarius.iemodule.IEContext;
-import aquarius.iemodule.annotations.HyperLink;
-import aquarius.iemodule.annotations.Mapper;
-import aquarius.iemodule.annotations.ReportConfiguration;
+import aquarius.iemodule.autoconfiguration.annotations.HyperLink;
+import aquarius.iemodule.autoconfiguration.annotations.Mapper;
+import aquarius.iemodule.autoconfiguration.annotations.ReportConfiguration;
 import aquarius.iemodule.impl.util.TemplateConfig;
 import aquarius.iemodule.processors.ImportProcessor;
 import aquarius.iemodule.structure.*;
-import aquarius.iemodule.utils.StringUtils;
-import com.google.common.primitives.Primitives;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -96,10 +96,10 @@ public class AutoContexConfigurer {
             } else {
                 reportableConfig = new HashMap<>();
                 for (Field f : declaredFields) {
-                    if (!f.isAnnotationPresent(aquarius.iemodule.annotations.Reportable.class))
+                    if (!f.isAnnotationPresent(aquarius.iemodule.autoconfiguration.annotations.Reportable.class))
                         continue;
 
-                    aquarius.iemodule.annotations.Reportable reportable = f.getAnnotation(aquarius.iemodule.annotations.Reportable.class);
+                    aquarius.iemodule.autoconfiguration.annotations.Reportable reportable = f.getAnnotation(aquarius.iemodule.autoconfiguration.annotations.Reportable.class);
                     ReportableConfigurer.ReportableConfig config = new ReportableConfigurer.ReportableConfig(reportable.altName(), reportable.order());
 
                     HyperLink hyperLink = f.getAnnotation(HyperLink.class);
@@ -361,10 +361,10 @@ public class AutoContexConfigurer {
             } else {
                 reportableConfig = new HashMap<>();
                 for (Field f : declaredFields) {
-                    if (!f.isAnnotationPresent(aquarius.iemodule.annotations.Reportable.class))
+                    if (!f.isAnnotationPresent(aquarius.iemodule.autoconfiguration.annotations.Reportable.class))
                         continue;
 
-                    aquarius.iemodule.annotations.Reportable reportable0 = f.getAnnotation(aquarius.iemodule.annotations.Reportable.class);
+                    aquarius.iemodule.autoconfiguration.annotations.Reportable reportable0 = f.getAnnotation(aquarius.iemodule.autoconfiguration.annotations.Reportable.class);
                     ReportableConfigurer.ReportableConfig config = new ReportableConfigurer.ReportableConfig(reportable0.altName(), reportable0.order());
                     Mapper mapper = f.getAnnotation(Mapper.class);
                     if (mapper != null) {
@@ -478,10 +478,10 @@ public class AutoContexConfigurer {
         } else {
             reportableConfig = new HashMap<>();
             for (Field f : declaredFields) {
-                if (!f.isAnnotationPresent(aquarius.iemodule.annotations.Reportable.class))
+                if (!f.isAnnotationPresent(aquarius.iemodule.autoconfiguration.annotations.Reportable.class))
                     continue;
 
-                aquarius.iemodule.annotations.Reportable reportable0 = f.getAnnotation(aquarius.iemodule.annotations.Reportable.class);
+                aquarius.iemodule.autoconfiguration.annotations.Reportable reportable0 = f.getAnnotation(aquarius.iemodule.autoconfiguration.annotations.Reportable.class);
                 ReportableConfigurer.ReportableConfig config = new ReportableConfigurer.ReportableConfig(reportable0.altName(), reportable0.order());
                 Mapper mapper = f.getAnnotation(Mapper.class);
                 if (mapper != null) {
@@ -539,7 +539,7 @@ public class AutoContexConfigurer {
 
 
         @Override
-        public int compareTo( FieldWrapper o) {
+        public int compareTo(@NotNull FieldWrapper o) {
             int i = this.order - o.order;
             if (i == 0 && this.field.getName().equals(o.field.getName())) return i;
             else if (i == 0) {

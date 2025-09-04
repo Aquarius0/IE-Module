@@ -1,4 +1,4 @@
-package aquarius.iemodule.annotations;
+package aquarius.iemodule.autoconfiguration.annotations;
 
 import aquarius.iemodule.structure.ReportableConfigurer;
 
