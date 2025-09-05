@@ -124,7 +124,6 @@ public class CustomerData implements Exportable<CustomerData> {
 }
 ```
 
-This makes IE-Module recognize this class as reportable.  
 For Excel exports, implement `ExcelSheetConfigurer` to configure sheets:
 
 ```java
@@ -148,7 +147,7 @@ public class CustomerData implements Exportable<CustomerData>, ExcelSheetConfigu
     public Iterable<SheetConfig<CustomerData>> sheetConfigs() {
         List<SheetConfig<CustomerData>> sheetConfigs = new ArrayList<>();
         sheetConfigs.add(new SheetConfig<>(Stream.of("addresses").collect(Collectors.toSet()), "Customer Data"));
-        sheetConfigs.add(new SheetConfig<>(Stream.of("age").collect(Collectors.toSet()), "Addresses", e -> e.status != null));
+        sheetConfigs.add(new SheetConfig<>(Stream.of("age").collect(Collectors.toSet()), "Addresses", e -> e.addresses != null));
         return sheetConfigs;
     }
 }
@@ -187,6 +186,101 @@ public class CustomerDataTaskRunner extends ExportTaskRunner<CustomerData> {
 ExportTaskRunner<CustomerData> taskRunner = new CustomerDataTaskRunner(myCustomerService);
 ExportProcessor<CustomerData> exportProcessor = new DefaultExcelExportProcessor<>("reportId", CustomerData.class);
 String excelFilePath = IEUtils.exportData(taskRunner, exportProcessor);
+```
+
+#### Example: Importable Class
+
+```java
+public class CustomerData implements Importable<CustomerData> {
+
+    @Reportable(order = 1, altName = "First Name")
+    private String firstName;
+
+    @Reportable(order = 2, altName = "Last Name")
+    private String lastName;
+
+    @Reportable
+    private int age;
+
+    // Getters and Setters
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomerData that = (CustomerData) o;
+        return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName);
+    }    
+}
+```
+
+When an Importable entity has a `List` field, implement `merge()` to combine multiple records:
+
+```java
+@Override
+public void merge(CustomerData customerData) {
+    if (this.address == null) {
+        this.address = new ArrayList<>();
+    }
+    address.addAll(customerData.address);
+}
+```
+
+> **Note:**  
+> Implement `equals()` and `hashCode()` to prevent duplication during import and merging.
+
+For Excel imports, implement `ExcelSheetConfigurer` to configure sheets:
+
+```java
+public class CustomerData implements Importable<CustomerData>, ExcelSheetConfigurer<CustomerData> {
+
+    @Reportable(order = 1, altName = "First Name")
+    private String firstName;
+
+    @Reportable(order = 2, altName = "Last Name")
+    private String lastName;
+
+    @Reportable
+    private int age;
+
+    private List<String> address;
+
+    // Getters and Setters
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomerData that = (CustomerData) o;
+        return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName);
+    }
+
+
+    @Override
+    public void merge(CustomerData customerData) {
+        if(this.address == null){
+            this.address=new ArrayList<>();
+        }
+        address.addAll(customerData.address);
+    }
+
+    @Override
+    public Iterable<SheetConfig<CustomerData>> sheetConfigs() {
+        List<SheetConfig<CustomerData>> sheetConfigs = new ArrayList<>();
+        sheetConfigs.add(new SheetConfig<>(Stream.of("address").collect(Collectors.toSet()), "Customer Data"));
+        sheetConfigs.add(new SheetConfig<>(Stream.of("age").collect(Collectors.toSet()), "Address", e -> e.address != null));
+        return sheetConfigs;
+    }
+}
 ```
 
 ---
