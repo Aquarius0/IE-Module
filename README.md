@@ -39,9 +39,22 @@ Built on top of **Apache POI**, it supports multiple database types and output f
 
 ### 1. Add Maven Dependency
 
+Add GitHub repository:
+
+```xml
+ <repositories>
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+```
+
+Add dependency:
+
 ```xml
 <dependency>
-    <groupId>com.yourcompany</groupId>
+    <groupId>com.github.aquarius0</groupId>
     <artifactId>ie-module</artifactId>
     <version>1.0.0</version>
 </dependency>
@@ -50,8 +63,12 @@ Built on top of **Apache POI**, it supports multiple database types and output f
 Or install manually:
 
 ```bash
-mvn install:install-file -Dfile=ie-module.jar -DgroupId=com.yourcompany -DartifactId=ie-module -Dversion=1.0.0 -Dpackaging=jar
+mvn install:install-file -Dfile=ie-module.jar \
+    -DgroupId=org.aquarius -DartifactId=ie-module \
+    -Dversion=1.0.0 -Dpackaging=jar
 ```
+
+---
 
 ---
 
