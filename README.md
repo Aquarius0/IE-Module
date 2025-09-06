@@ -64,7 +64,7 @@ Or install manually:
 
 ```bash
 mvn install:install-file -Dfile=ie-module.jar \
-    -DgroupId=org.aquarius -DartifactId=ie-module \
+    -DgroupId=com.github.aquarius0 -DartifactId=ie-module \
     -Dversion=1.0.0 -Dpackaging=jar
 ```
 
