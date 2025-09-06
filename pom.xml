@@ -15,6 +15,7 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
@@ -126,17 +127,26 @@
             <url>https://maven.pkg.github.com/Aquarius0/IE-Module</url>
         </repository>
     </distributionManagement>
+
     <build>
+        <resources>
+            <resource>
+                <directory>${basedir}</directory>
+                <includes>
+                    <include>LICENSE</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
                     <archive>
-                        <includes>
-                            <include>LICENSE</include>
-                        </includes>
-                    </archive>
+                        <addMavenDescriptor>true</addMavenDescriptor>
+`                    </archive>
                 </configuration>
             </plugin>
         </plugins>
