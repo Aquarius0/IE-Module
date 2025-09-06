@@ -264,6 +264,7 @@ public class CustomerData implements Importable<CustomerData>, ExcelSheetConfigu
     @Reportable
     private int age;
 
+    @Reportable
     private List<String> address;
 
     // Getters and Setters
