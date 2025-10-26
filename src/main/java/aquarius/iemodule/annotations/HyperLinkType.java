@@ -1,4 +1,4 @@
-package aquarius.iemodule.autoconfiguration.annotations;
+package aquarius.iemodule.annotations;
 
 public enum HyperLinkType {
     NONE,

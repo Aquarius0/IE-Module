@@ -10,7 +10,6 @@ public class ReOpenableInputStream  {
         this.file = file;
     }
 
-
     public InputStream getInputStream() throws IOException {
         return new BufferedInputStream(Files.newInputStream(file.toPath()));
     }

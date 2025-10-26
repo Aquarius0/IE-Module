@@ -4,7 +4,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 
-@ConfigurationProperties(prefix = "ie")
 public class IEProperties {
 
     private String ieReportPath;
@@ -14,6 +13,9 @@ public class IEProperties {
     private String ieExportPath;
 
     private List<String> packageToScan;
+
+    private FileStoreType storeType;
+
 
     public List<String> getPackageToScan() {
         return packageToScan;
@@ -43,7 +45,19 @@ public class IEProperties {
         return ieExportPath;
     }
 
+    public FileStoreType getStoreType() {
+        return storeType;
+    }
+
+    public void setStoreType(FileStoreType storeType) {
+        this.storeType = storeType;
+    }
+
     public void setIeExportPath(String ieExportPath) {
         this.ieExportPath = ieExportPath;
+    }
+
+    public enum FileStoreType{
+        MEMORY,DISK
     }
 }

@@ -4,6 +4,7 @@ import aquarius.iemodule.DefaultIEExcelStyle;
 import aquarius.iemodule.IEContext;
 import aquarius.iemodule.IEExcelStyle;
 import aquarius.iemodule.exception.NotAcceptableReportTypeException;
+import aquarius.iemodule.filemanager.IEFile;
 import aquarius.iemodule.impl.util.ExcelSheetConfigurer;
 import aquarius.iemodule.processors.ExportProcessor;
 import aquarius.iemodule.structure.*;
@@ -14,6 +15,7 @@ import org.apache.poi.xssf.usermodel.*;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.util.*;
 
 public class DefaultExcelExportProcessor<T extends Exportable<T> & ExcelSheetConfigurer<T>> extends DefaultExcelProcessor implements ExportProcessor<T> {
@@ -378,7 +380,8 @@ public class DefaultExcelExportProcessor<T extends Exportable<T> & ExcelSheetCon
     }
 
     @Override
-    public String finalizeProcess() throws IOException {
+    public IEFile finalizeProcess() throws IOException {
+        IEFile file=null;
         for(int i= 0; i<sheetAtrributes.size();i++){
             XSSFSheet sheetAt = workbook.getSheetAt(0);
             for(int j=0; j<sheetAt.getRow(sheetAtrributes.get(i).lastHeaderRow).getLastCellNum(); j++){
@@ -386,14 +389,15 @@ public class DefaultExcelExportProcessor<T extends Exportable<T> & ExcelSheetCon
             }
         }
 
-        File storedFile = new File(new File(IEContext.getExportPath()), fileName + ".xlsx");
-        OutputStream os = new BufferedOutputStream(new FileOutputStream(storedFile));
+        Path storedFile = new File(new File(IEContext.getExportPath()), fileName + ".xlsx").toPath();
+        file=IEContext.createFile(storedFile.toString());
+        OutputStream os = new BufferedOutputStream(file.getOutputStream());
         workbook.write(os);
         workbook.close();
         os.flush();
         os.close();
 
-        return storedFile.getPath();
+        return file;
     }
 
     class SingleFieldWrapper {

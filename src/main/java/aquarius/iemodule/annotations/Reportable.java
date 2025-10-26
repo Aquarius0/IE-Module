@@ -1,4 +1,4 @@
-package aquarius.iemodule.autoconfiguration.annotations;
+package aquarius.iemodule.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

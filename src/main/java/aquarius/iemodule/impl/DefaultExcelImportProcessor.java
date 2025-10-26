@@ -1,5 +1,6 @@
 package aquarius.iemodule.impl;
 
+import aquarius.iemodule.filemanager.IEFile;
 import aquarius.iemodule.utils.StringUtils;
 import com.google.common.primitives.Primitives;
 
@@ -294,7 +295,7 @@ public class DefaultExcelImportProcessor<T extends Importable<T> & ExcelSheetCon
                             int cellCount = 0;
                             for (Cell cellReport : row) {
                                 XSSFCell cell = reportRow.createCell(cellCount++);
-                                switch (cellReport.getCellTypeEnum()) {
+                                switch (cellReport.getCellType()) {
                                     case NUMERIC:
                                         cell.setCellValue(cellReport.getNumericCellValue());
                                         break;
@@ -323,7 +324,7 @@ public class DefaultExcelImportProcessor<T extends Importable<T> & ExcelSheetCon
                             int cellCount = 0;
                             for (Cell cellReport : row) {
                                 XSSFCell cell = reportRow.createCell(cellCount++);
-                                switch (cellReport.getCellTypeEnum()) {
+                                switch (cellReport.getCellType()) {
                                     case NUMERIC:
                                         cell.setCellValue(cellReport.getNumericCellValue());
                                         break;
@@ -351,7 +352,7 @@ public class DefaultExcelImportProcessor<T extends Importable<T> & ExcelSheetCon
         Object objectVal = null;
         String stringCellValue = null;
         if (c==null)return null;
-        switch (c.getCellTypeEnum()) {
+        switch (c.getCellType()) {
             case STRING:
                 stringCellValue = c.getStringCellValue();
                 break;
@@ -463,18 +464,19 @@ public class DefaultExcelImportProcessor<T extends Importable<T> & ExcelSheetCon
     }
 
     @Override
-    public String finalizeProcess() throws IOException {
-
+    public IEFile finalizeProcess() throws IOException {
+        IEFile file=null;
         inoutWorkbook.close();
         if (hasError) {
             Path path = new File(IEContext.getReportPath() + "/" + reportableEntity.getEntity().getSimpleName() + "-" + user + "-" + new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(new Date()) + ".xlsx").toPath();
-            BufferedOutputStream writer = new BufferedOutputStream(Files.newOutputStream(path));
+            file=IEContext.createFile(path.toString());
+            BufferedOutputStream writer = new BufferedOutputStream(file.getOutputStream());
             reportWorkbook.write(writer);
             writer.flush();
             writer.close();
             reportWorkbook.close();
 
-            return path.toString();
+            return file;
         }
         return null;
     }

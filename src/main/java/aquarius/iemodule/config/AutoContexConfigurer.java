@@ -4,9 +4,9 @@ import com.google.common.primitives.Primitives;
 import jakarta.validation.constraints.NotNull;
 import aquarius.iemodule.utils.StringUtils;
 import aquarius.iemodule.IEContext;
-import aquarius.iemodule.autoconfiguration.annotations.HyperLink;
-import aquarius.iemodule.autoconfiguration.annotations.Mapper;
-import aquarius.iemodule.autoconfiguration.annotations.ReportConfiguration;
+import aquarius.iemodule.annotations.HyperLink;
+import aquarius.iemodule.annotations.Mapper;
+import aquarius.iemodule.annotations.ReportConfiguration;
 import aquarius.iemodule.impl.util.TemplateConfig;
 import aquarius.iemodule.processors.ImportProcessor;
 import aquarius.iemodule.structure.*;
@@ -96,10 +96,10 @@ public class AutoContexConfigurer {
             } else {
                 reportableConfig = new HashMap<>();
                 for (Field f : declaredFields) {
-                    if (!f.isAnnotationPresent(aquarius.iemodule.autoconfiguration.annotations.Reportable.class))
+                    if (!f.isAnnotationPresent(aquarius.iemodule.annotations.Reportable.class))
                         continue;
 
-                    aquarius.iemodule.autoconfiguration.annotations.Reportable reportable = f.getAnnotation(aquarius.iemodule.autoconfiguration.annotations.Reportable.class);
+                    aquarius.iemodule.annotations.Reportable reportable = f.getAnnotation(aquarius.iemodule.annotations.Reportable.class);
                     ReportableConfigurer.ReportableConfig config = new ReportableConfigurer.ReportableConfig(reportable.altName(), reportable.order());
 
                     HyperLink hyperLink = f.getAnnotation(HyperLink.class);
@@ -361,10 +361,10 @@ public class AutoContexConfigurer {
             } else {
                 reportableConfig = new HashMap<>();
                 for (Field f : declaredFields) {
-                    if (!f.isAnnotationPresent(aquarius.iemodule.autoconfiguration.annotations.Reportable.class))
+                    if (!f.isAnnotationPresent(aquarius.iemodule.annotations.Reportable.class))
                         continue;
 
-                    aquarius.iemodule.autoconfiguration.annotations.Reportable reportable0 = f.getAnnotation(aquarius.iemodule.autoconfiguration.annotations.Reportable.class);
+                    aquarius.iemodule.annotations.Reportable reportable0 = f.getAnnotation(aquarius.iemodule.annotations.Reportable.class);
                     ReportableConfigurer.ReportableConfig config = new ReportableConfigurer.ReportableConfig(reportable0.altName(), reportable0.order());
                     Mapper mapper = f.getAnnotation(Mapper.class);
                     if (mapper != null) {
@@ -478,10 +478,10 @@ public class AutoContexConfigurer {
         } else {
             reportableConfig = new HashMap<>();
             for (Field f : declaredFields) {
-                if (!f.isAnnotationPresent(aquarius.iemodule.autoconfiguration.annotations.Reportable.class))
+                if (!f.isAnnotationPresent(aquarius.iemodule.annotations.Reportable.class))
                     continue;
 
-                aquarius.iemodule.autoconfiguration.annotations.Reportable reportable0 = f.getAnnotation(aquarius.iemodule.autoconfiguration.annotations.Reportable.class);
+                aquarius.iemodule.annotations.Reportable reportable0 = f.getAnnotation(aquarius.iemodule.annotations.Reportable.class);
                 ReportableConfigurer.ReportableConfig config = new ReportableConfigurer.ReportableConfig(reportable0.altName(), reportable0.order());
                 Mapper mapper = f.getAnnotation(Mapper.class);
                 if (mapper != null) {

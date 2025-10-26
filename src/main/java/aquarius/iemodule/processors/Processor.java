@@ -1,6 +1,7 @@
 package aquarius.iemodule.processors;
 
 
+import aquarius.iemodule.filemanager.IEFile;
 import aquarius.iemodule.structure.Reportable;
 
 import java.io.IOException;
@@ -8,7 +9,7 @@ import java.io.IOException;
 public interface Processor {
     void init() throws Exception;
 
-    String finalizeProcess() throws IOException;
+    IEFile finalizeProcess() throws IOException;
 
     String ProcessorName();
 
