@@ -9,6 +9,7 @@ public class InMemoryFile extends IEFile{
 
     public InMemoryFile(String filePath) {
         super(filePath);
+        byteArrayOutputStream = new ByteArrayOutputStream();
     }
 
     @Override

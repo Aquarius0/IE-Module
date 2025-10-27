@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.aquarius0</groupId>
-    <artifactId>ie-module-core</artifactId>
-    <version>1.0.1</version>
+    <artifactId>ie-module</artifactId>
+    <version>1.1.0</version>
     <name>IE</name>
     <description>A Java module for import/export operations and integrations.</description>
     <url>https://github.com/Aquarius0/IE-Module</url>
@@ -50,41 +50,53 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>3.4.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <version>4.0.0-M3</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>8.0.1.Final</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.18.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.18.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-jul</artifactId>
             <version>2.18.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
             <version>2.18.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.20.0</version>
+            <scope>provided</scope>
         </dependency>
-
 
         <dependency>
             <groupId>jakarta.el</groupId>
@@ -123,11 +135,6 @@
             <id>ossrh</id>
             <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-        <!--        <repository>-->
-        <!--            <id>github</id>-->
-        <!--            <name>GitHub Packages</name>-->
-        <!--            <url>https://maven.pkg.github.com/Aquarius0/IE-Module</url>-->
-        <!--        </repository>-->
     </distributionManagement>
 
     <build>
@@ -138,6 +145,12 @@
                     <include>LICENSE</include>
                 </includes>
                 <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
             </resource>
         </resources>
 
@@ -188,7 +201,6 @@
                 <configuration>
                     <archive>
                         <addMavenDescriptor>true</addMavenDescriptor>
-                        `
                     </archive>
                 </configuration>
             </plugin>
