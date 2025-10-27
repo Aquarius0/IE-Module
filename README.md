@@ -39,24 +39,13 @@ Built on top of **Apache POI**, it supports multiple database types and output f
 
 ### 1. Add Maven Dependency
 
-Add GitHub repository:
-
-```xml
- <repositories>
-  <repository>
-    <id>jitpack.io</id>
-    <url>https://jitpack.io</url>
-  </repository>
-</repositories>
-```
-
-Add dependency:
+Add maven dependency:
 
 ```xml
 <dependency>
-    <groupId>com.github.aquarius0</groupId>
-    <artifactId>ie-module</artifactId>
-    <version>1.0.0</version>
+  <groupId>io.github.aquarius0</groupId>
+  <artifactId>ie-module</artifactId>
+  <version>1.1.0</version>
 </dependency>
 ```
 
@@ -76,12 +65,13 @@ mvn install:install-file -Dfile=ie-module.jar \
 
 IE-Module has several configurable properties. These can be set in `application.properties` or programmatically.
 
-| Property               | Description                                           |
-|------------------------|-----------------------------------------------------|
-| `ie.ie-report-path`    | Path where import/export progress reports are saved |
-| `ie.ie-export-path`    | Path where exported data will be stored             |
-| `ie.ie-template-path`  | Path where templates are stored                     |
-| `ie.package-to-scan`   | Package to scan for reportable classes              |
+| Property              | Description                                         |
+|-----------------------|-----------------------------------------------------|
+| `ie.ie-report-path`   | Path where import/export progress reports are saved |
+| `ie.ie-export-path`   | Path where exported data will be stored             |
+| `ie.ie-template-path` | Path where templates are stored                     |
+| `ie.package-to-scan`  | Package to scan for reportable classes              |
+| `ie.store-type`       | Store File In Memory or on Disk                     |
 
 **Example (`application.properties`):**
 
@@ -90,6 +80,7 @@ ie.ie-report-path=/ie/importReport
 ie.ie-export-path=/ie/export
 ie.ie-template-path=/ie/template
 ie.package-to-scan=com.example.package
+ie.store-type=MEMORY
 ```
 
 ---
@@ -202,7 +193,7 @@ public class CustomerDataTaskRunner extends ExportTaskRunner<CustomerData> {
 ```java
 ExportTaskRunner<CustomerData> taskRunner = new CustomerDataTaskRunner(myCustomerService);
 ExportProcessor<CustomerData> exportProcessor = new DefaultExcelExportProcessor<>("reportId", CustomerData.class);
-String excelFilePath = IEUtils.exportData(taskRunner, exportProcessor);
+IEFile file = IEUtils.exportData(taskRunner, exportProcessor);
 ```
 
 #### Example: Importable Class
